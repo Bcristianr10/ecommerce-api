@@ -149,6 +149,15 @@ Para ejecutar las pruebas, deben ejecutar el siguiente comando:
 npm test
 ```
 
+Requisitos y entorno:
+
+- Node.js 22 LTS (verificado con v22.20.0). `npm install` baja el binario de `sqlite3`; no hace falta otro paso. Si `npm install` falla al compilar `sqlite3`, es un error de entorno (toolchain nativo), no un fallo de las reglas.
+- Jest fija `NODE_ENV=test`, por lo que las pruebas usan SQLite en memoria y no tocan `db.sqlite`.
+- Servicios (`tests/services/`): Jest con los modelos mockeados.
+- Rutas (`tests/routes/`): Supertest sobre una aplicación Express aislada que monta el router bajo `/api/carts` o `/api/products`. El servidor real usa `/cart` y `/products`.
+
+Pruebas que fallan a propósito: cada `it` marcado con `// HALLAZGO:` falla porque el servidor contradice una regla de este README (cantidad 0, negativa o no entera en el alta de ítems, y pertenencia del ítem al carrito en `PUT`/`DELETE`). El oráculo no se cambia para que pasen; `npm test` termina con 6 pruebas en rojo mientras esos defectos existan.
+
 Si quieren ver el coverage de las pruebas, pueden ejecutar el siguiente comando:
 
 ```bash
