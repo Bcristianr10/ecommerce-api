@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .get { background: #61affe; color: white; }
+        .post { background: #49cc90; color: white; }
+        .put { background: #fca130; color: white; }
+        .delete { background: #f93e3e; color: white; }
+
+        .url {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .response-code {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: #eee;
+            font-family: monospace;
+        }
+
+        .params {
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Documentation</h1>
+
+    <h2>Cart Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/cart/:userId</span>
+        <h3>Create Cart</h3>
+        <p>Creates a new shopping cart for a user.</p>
+        <h4>Success Response</h4>
+        <span class="response-code">201 CREATED</span>
+        <pre>
+{
+  "id": "cart_123",
+  "userId": "123",
+  "createdAt": "2024-03-20T10:00:00Z"
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/cart/:cartId/items</span>
+        <h3>Add Item to Cart</h3>
+        <p>Adds a product to a shopping cart.</p>
+        <h4>Request Body</h4>
+        <pre>
+{
+  "productId": "prod_456",
+  "quantity": 2
+}</pre>
+        <h4>Success Response</h4>
+        <span class="response-code">201 CREATED</span>
+        <pre>
+{
+  "id": "item_789",
+  "cartId": "cart_123",
+  "productId": "prod_456",
+  "quantity": 2
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/cart/:cartId/items</span>
+        <h3>Get Cart Items</h3>
+        <p>Retrieves all items in a shopping cart with price calculations.</p>
+        <h4>Success Response</h4>
+        <span class="response-code">200 OK</span>
+        <pre>
+{
+  "items": [
+    {
+      "id": "item_789",
+      "productId": "prod_456",
+      "quantity": 2,
+      "product": {
+        "name": "Product Name",
+        "price": 29.99
+      },
+      "itemTotal": 59.98
+    }
+  ],
+  "summary": {
+    "subtotal": 59.98,
+    "totalTax": 5.99,
+    "total": 65.97
+  }
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="url">/cart/:cartId/items/:itemId</span>
+        <h3>Update Cart Item</h3>
+        <p>Updates the quantity of an item in the cart.</p>
+        <h4>Request Body</h4>
+        <pre>
+{
+  "quantity": 3
+}</pre>
+        <h4>Success Response</h4>
+        <span class="response-code">200 OK</span>
+        <pre>
+{
+  "id": "item_789",
+  "cartId": "cart_123",
+  "productId": "prod_456",
+  "quantity": 3
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <span class="url">/cart/:cartId/items/:itemId</span>
+        <h3>Remove Cart Item</h3>
+        <p>Removes an item from the cart.</p>
+        <h4>Success Response</h4>
+        <span class="response-code">204 NO CONTENT</span>
+    </div>
+
+    <h2>Categories Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/categories</span>
+        <h3>Create Category</h3>
+        <p>Creates a new product category.</p>
+        <h4>Request Body</h4>
+        <pre>
+{
+  "name": "Electronics",
+  "description": "Electronic devices and accessories"
+}</pre>
+        <h4>Success Response</h4>
+        <span class="response-code">201 CREATED</span>
+        <pre>
+{
+  "id": "cat_123",
+  "name": "Electronics",
+  "description": "Electronic devices and accessories"
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/categories</span>
+        <h3>Get All Categories</h3>
+        <p>Retrieves all product categories.</p>
+        <h4>Success Response</h4>
+        <span class="response-code">200 OK</span>
+        <pre>
+[
+  {
+    "id": "cat_123",
+    "name": "Electronics",
+    "description": "Electronic devices and accessories"
+  }
+]</pre>
+    </div>
+
+    <h2>Products Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/products</span>
+        <h3>Create Product</h3>
+        <p>Creates a new product.</p>
+        <h4>Request Body</h4>
+        <pre>
+{
+  "name": "Smartphone",
+  "price": 599.99,
+  "categoryId": "cat_123"
+}</pre>
+        <h4>Success Response</h4>
+        <span class="response-code">201 CREATED</span>
+        <pre>
+{
+  "id": "prod_456",
+  "name": "Smartphone",
+  "price": 599.99,
+  "categoryId": "cat_123"
+}</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/products</span>
+        <h3>Get All Products</h3>
+        <p>Retrieves all products with their categories.</p>
+        <h4>Success Response</h4>
+        <span class="response-code">200 OK</span>
+        <pre>
+[
+  {
+    "id": "prod_456",
+    "name": "Smartphone",
+    "price": 599.99,
+    "category": {
+      "id": "cat_123",
+      "name": "Electronics"
+    }
+  }
+]</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/products/category/:categoryId</span>
+        <h3>Get Products by Category</h3>
+        <p>Retrieves products filtered by category with sorting and pagination.</p>
+        <div class="params">
+            <h4>Query Parameters</h4>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>sort</td>
+                    <td>Sort field and direction</td>
+                    <td>price,DESC</td>
+                </tr>
+                <tr>
+                    <td>limit</td>
+                    <td>Number of items per page</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>offset</td>
+                    <td>Number of items to skip</td>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+        <h4>Success Response</h4>
+        <span class="response-code">200 OK</span>
+        <pre>
+[
+  {
+    "id": "prod_456",
+    "name": "Smartphone",
+    "price": 599.99,
+    "categoryId": "cat_123"
+  }
+]</pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/products/categories</span>
+        <h3>Get Products by Multiple Categories</h3>
+        <p>Retrieves products filtered by multiple categories with sorting and pagination.</p>
+        <div class="params">
+            <h4>Query Parameters</h4>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>categories</td>
+                    <td>Comma-separated category IDs</td>
+                    <td>cat_123,cat_456</td>
+                </tr>
+                <tr>
+                    <td>sort</td>
+                    <td>Sort field and direction</td>
+                    <td>price,ASC</td>
+                </tr>
+                <tr>
+                    <td>limit</td>
+                    <td>Number of items per page</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>offset</td>
+                    <td>Number of items to skip</td>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+        <h4>Success Response</h4>
+        <span class="response-code">200 OK</span>
+        <pre>
+[
+  {
+    "id": "prod_456",
+    "name": "Smartphone",
+    "price": 599.99,
+    "categoryId": "cat_123"
+  }
+]</pre>
+    </div>
+
+    <h2>Error Responses</h2>
+    <div class="endpoint">
+        <p>All endpoints return the following error response structure when an error occurs:</p>
+        <span class="response-code">400 BAD REQUEST</span>
+        <pre>
+{
+  "error": "Error message description"
+}</pre>
+    </div>
+</body>
+</html> 

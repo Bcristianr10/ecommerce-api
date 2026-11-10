@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Archivo de configuración de Stryker para mutaciones en el proyecto.",
+  "packageManager": "npm",
+  "reporters": [
+    "html",
+    "clear-text",
+    "progress"
+  ],
+  "testRunner": "jest",
+  "jest": {
+    "enableFindRelatedTests": true
+  },
+  "testRunner_comment": "Take a look at https://stryker-mutator.io/docs/stryker-js/jest-runner for information about the jest plugin.",
+  "coverageAnalysis": "perTest",
+  "mutate": [
+    "./**/*.js",
+    "!tests/**/*.js",
+    "!node_modules/**/*.js",
+    "coverage/**/*.js",
+    "reports/**/*.js"
+  ]
+}
