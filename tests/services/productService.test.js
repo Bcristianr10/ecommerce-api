@@ -75,4 +75,102 @@ describe('ProductService', () => {
     expect(query.limit).toBe(2);
     expect(query.offset).toBe(1);
   });
+
+
+  describe('getAllProducts', () => {
+    it('devuelve todos los productos', async () => {
+      const mockProducts = [{ id: 1 }, { id: 2 }];
+      Product.findAll.mockResolvedValue(mockProducts);
+      const result = await ProductService.getAllProducts();
+      expect(Product.findAll).toHaveBeenCalled();
+      expect(result).toEqual(mockProducts);
+    });
+  });
+
+  describe('getProductById', () => {
+    it('devuelve el producto si existe', async () => {
+      const mockProduct = { id: 1, name: 'A' };
+      Product.findByPk.mockResolvedValue(mockProduct);
+      const result = await ProductService.getProductById(1);
+      expect(Product.findByPk).toHaveBeenCalledWith(1);
+      expect(result).toEqual(mockProduct);
+    });
+
+    it('devuelve null si no existe', async () => {
+      Product.findByPk.mockResolvedValue(null);
+      const result = await ProductService.getProductById(9999);
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('createProduct', () => {
+    it('crea el producto cuando la categoría existe', async () => {
+      Category.findByPk.mockResolvedValue({ id: 1 });
+      const mockProduct = { id: 1, name: 'A', categoryId: 1 };
+      Product.create.mockResolvedValue(mockProduct);
+
+      const result = await ProductService.createProduct({ name: 'A', categoryId: 1 });
+
+      expect(Category.findByPk).toHaveBeenCalledWith(1);
+      expect(Product.create).toHaveBeenCalled();
+      expect(result).toEqual(mockProduct);
+    });
+
+    it('lanza error si la categoría no existe', async () => {
+      Category.findByPk.mockResolvedValue(null);
+      await expect(ProductService.createProduct({ name: 'A', categoryId: 9999 }))
+        .rejects.toThrow('Category with id 9999 does not exist');
+    });
+  });
+
+  describe('getProductsByCategory (sin opciones)', () => {
+    it('devuelve productos de la categoría sin opciones', async () => {
+      const mockProducts = [{ id: 1 }];
+      Product.findAll.mockResolvedValue(mockProducts);
+
+      const result = await ProductService.getProductsByCategory(1);
+
+      expect(Product.findAll).toHaveBeenCalledWith({
+        where: { categoryId: 1 },
+        include: Category
+      });
+      expect(result).toEqual(mockProducts);
+    });
+  });
+
+  describe('getProductsByCategories (errores)', () => {
+    it('lanza error si no se pasan categorías', async () => {
+      await expect(ProductService.getProductsByCategories(''))
+        .rejects.toThrow('Categories parameter is required');
+    });
+
+    it('lanza error si categories es undefined', async () => {
+      await expect(ProductService.getProductsByCategories(undefined))
+        .rejects.toThrow('Categories parameter is required');
+    });
+  });
+
+  describe('updateProduct (sin cambiar categoría)', () => {
+    it('actualiza sin verificar categoría si no se cambia', async () => {
+      Product.update.mockResolvedValue([1]);
+
+      const result = await ProductService.updateProduct(1, { name: 'B' });
+
+      expect(Category.findByPk).not.toHaveBeenCalled();
+      expect(Product.update).toHaveBeenCalledWith({ name: 'B' }, { where: { id: 1 } });
+      expect(result).toEqual([1]);
+    });
+  });
+
+  describe('deleteProduct', () => {
+    it('elimina el producto', async () => {
+      Product.destroy.mockResolvedValue(1);
+
+      const result = await ProductService.deleteProduct(1);
+
+      expect(Product.destroy).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(result).toBe(1);
+    });
+  });
+
 });

@@ -152,6 +152,14 @@ describe('Cart Routes', () => {
       expect(rows).toHaveLength(1);
       expect(rows[0].quantity).toBe(6);
     });
+
+    it('R5 Consulta | inválida: cartId "nonidad123" no numérico responde 400 "Cart ID should be a number"', async () => {
+      const res = await request(app).get('/api/carts/nonidad123/items');
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: 'Cart ID should be a number' });
+    });
+
+
   });
 
   describe('PUT y DELETE /api/carts/:cartId/items/:itemId', () => {
