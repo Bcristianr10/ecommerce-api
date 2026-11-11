@@ -79,4 +79,12 @@ describe('Product Routes', () => {
     expect(res.status).toBe(200);
     expect(res.body.map(p => p.name).sort()).toEqual(['Cuaderno', 'Lapiz']);
   });
+
+  it('P3 Por varias categorías | límite: categories=9999,8888 inexistentes responde 200 y lista vacía', async () => {
+    const res = await request(app).get('/api/products/categories?categories=9999,8888');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+
+
 });
